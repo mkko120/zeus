@@ -1,9 +1,10 @@
 const Discord = require('discord.js')
-const {readdirSync} = require("fs");
+const { readdirSync } = require("fs");
 require("dotenv").config()
 
 const client = new Discord.Client({
     intents: [
+        Discord.Intents.FLAGS.GUILDS,
         Discord.Intents.FLAGS.GUILD_MESSAGES,
         Discord.Intents.FLAGS.GUILD_MEMBERS,
         Discord.Intents.FLAGS.GUILD_BANS,
@@ -22,12 +23,12 @@ readdirSync('./commands/').filter(file => file.endsWith('.js')).forEach(file => 
     client.commands.set(command.name, command);
 });
 
-readdirSync('./events/').filter(file => file.endsWith('.js')).forEach(async file => {
+readdirSync('./events/').filter(file => file.endsWith('.js')).forEach(file => {
     const event = require(`./events/${file}`);
     if (event.once) {
-        await client.once(event.name, (...args) => event.execute(...args, client));
+        client.once(event.name, async (...args) => await event.execute(...args, client));
     } else {
-        await client.on(event.name, (...args) => event.execute(...args, client));
+        client.on(event.name, async (...args) => await event.execute(...args, client));
     }
 });
 
