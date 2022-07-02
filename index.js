@@ -1,5 +1,6 @@
 const Discord = require('discord.js')
 const { readdirSync } = require("fs");
+const utils = require("./utils");
 require("dotenv").config()
 
 const client = new Discord.Client({
@@ -14,6 +15,11 @@ const client = new Discord.Client({
 client.commands = new Discord.Collection()
 
 client.on('ready', () => {
+    utils.dbSetup()
+        .then(() => {
+            console.log("Database setup complete")
+        })
+        .catch(console.log);
     console.log("Bot ready!")
 })
 
