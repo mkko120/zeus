@@ -9,7 +9,7 @@ const embedBuilder = (author, message, channel, color, title) => {
         .setAuthor({name: author.tag, iconURL: author.displayAvatarURL({format: 'jpg'})})
         .setDescription("This is an auto-generated notification")
         .addField("Notification type", title)
-        .addField("Message", message)
+        .addField("Message/Reason", message)
         .addField("Channel", channel.toString())
         .setTimestamp()
         .setFooter({text: `UserID: ${author.id}`});
@@ -24,17 +24,16 @@ const dbSetup = async () => {
     await db.set("warnings", {});
 }
 
-const sendEmbedMessage = async (author, message, channel, color, title, warned = null) => {
+const sendEmbedMessage = async (author, message, channel, color, title, affected = null) => {
     const em = embedBuilder(author, message, channel, color, title)
 
 
-    if (warned !== null) {
-        em.addField("Warned user", warned.toString())
+    if (affected !== null) {
+        em.addField("Affected user", affected.toString())
     }
 
     let dbConfig = await db.get("config");
 
-    console.log(dbConfig)
     try {
         if (dbConfig === null) {
             dbConfig = {};

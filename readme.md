@@ -2,7 +2,7 @@
 
 ---
 
- Everything that you ever expeced of an discord moderation bot will be here.
+ Everything that you ever expected from a discord moderation bot will be here.
 
 > blacklisted words: 
 >
