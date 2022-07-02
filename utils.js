@@ -25,21 +25,53 @@ const dbSetup = async () => {
 }
 
 
-const sendEmbedMessage = async (author, message, channel, color, title) => {
+const sendEmbedMessage = async (author, message, channel, color, title, warned = null) => {
     const em = embedBuilder(author, message, channel, color, title)
 
-    const dbConfig = await db.get("config");
-    if (dbConfig[channel.guild.id].logChannelID !== undefined || dbConfig[channel.guild.id].logChannelID !== null) {
-        fetchAndSend(channel.guild, dbConfig[channel.guild.id].logChannelID, em)
-    } else {
-        if (config.channels[channel.guild.id] !== undefined || config.channels[channel.guild.id] !== null) {
-            fetchAndSend(channel.guild, config.channels[channel.guild.id], em)
-            dbConfig[channel.guild.id].logChannelID = config.channels[channel.guild.id];
-            await db.set("config", dbConfig);
-        } else {
-            console.log("[utils.js:40] No channel found for guild: " + channel.guild.name)
-        }
+
+    if (warned !== null) {
+        em.addField("Warned user", warned.toString())
     }
+
+    let dbConfig = await db.get("config");
+
+    console.log(dbConfig)
+    try {
+        if (dbConfig === null) {
+            dbConfig = {};
+        }
+
+        if (dbConfig[channel.guild.id] === undefined) {
+            dbConfig[channel.guild.id] = {
+                prefix: "z!",
+                logChannelID: null,
+            };
+        }
+
+
+        if (
+            dbConfig[channel.guild.id].logChannelID !== undefined &&
+            dbConfig[channel.guild.id].logChannelID !== null
+        ) {
+            fetchAndSend(channel.guild, dbConfig[channel.guild.id].logChannelID, em)
+        } else {
+            if (
+                config.channels[channel.guild.id] !== undefined &&
+                config.channels[channel.guild.id] !== null
+            ) {
+                fetchAndSend(channel.guild, config.channels[channel.guild.id], em)
+
+                dbConfig[channel.guild.id].logChannelID = config.channels[channel.guild.id];
+                await db.set("config", dbConfig);
+            } else {
+                console.log("[utils.js:62] No channel found for guild: " + channel.guild.name)
+            }
+        }
+
+    } catch (e) {
+        console.log(e);
+    }
+
 }
 
 const fetchAndSend = (guild, channelID, em) => {

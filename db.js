@@ -1,5 +1,6 @@
 const Database = require("@replit/database");
-const client = new Database();
+require('dotenv').config();
+const client = new Database(process.env.REPLIT_DB_URL);
 
 
 const getSync = (key, callback) => {

@@ -1,4 +1,5 @@
 const db = require("../db")
+const utils = require("../utils");
 
 module.exports = {
     name: 'warn',
@@ -27,12 +28,14 @@ module.exports = {
         const userWarnings = serverWarnings[user.id];
 
         if (userWarnings === undefined) {
-            serverWarnings[user] = [];
+            serverWarnings[user.id] = [];
         }
 
+        console.log(`reason: :${args.slice(1).join(' ')}:`);
+
         const warningData = {
-            issuer: message.author,
-            reason: args.slice(1).join(" ") === "" || " " ? "No reason given." : args.slice(1).join(" "),
+            issuer: message.author.username,
+            reason: args.slice(1).join(" ") === "" ? "No reason given." : args.slice(1).join(" "),
             date: new Date().toUTCString(),
         }
 
@@ -42,7 +45,7 @@ module.exports = {
             .then(() => {
                 console.log("Succesfully pushed warning to database: ", warningData);
                 message.reply(`Successfully warned ${user.tag} for: **${warningData.reason}**. It's their **${serverWarnings[user.id].length}** warning.`);
-                utils.sendEmbedMessage(user.toString(), warningData.reason, message.channel, "#ff0000", "Warning");
+                utils.sendEmbedMessage(message.author, warningData.reason, message.channel, "#ff0000", "Warning", user);
             })
             .catch(console.log);
 
