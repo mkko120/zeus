@@ -33,12 +33,12 @@ describe('Database', () => {
         })
     });
     describe('Clearing database', () => {
-        it('should clear the Database', () => {
-            db.purge();
+        it('should clear the Database', async () => {
+            await db.purge();
         });
         it('should not have any values in Database', async () => {
             const result = await db.getAll();
-            expect(result.foo).to.equal(null);
+            expect(result.foo).to.equal(undefined);
         });
     });
 });
