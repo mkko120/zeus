@@ -17,6 +17,10 @@ module.exports = {
         *
         */
 
+        if (!await utils.isModerator(message)) {
+            return message.reply("You do not have permission to use this command.");
+        }
+
         const serverWarnings = await db.get("warnings");
 
         const user = message.mentions.users.first();
@@ -35,7 +39,7 @@ module.exports = {
 
         const warningData = {
             issuer: message.author.username,
-            reason: args.slice(1).join(" ") === "" ? "No reason given." : args.slice(1).join(" "),
+            reason: args.length <= 1 ? "No reason given." : args.slice(1).join(" "),
             date: new Date().toUTCString(),
         }
 

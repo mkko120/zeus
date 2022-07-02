@@ -3,6 +3,17 @@ const { readdirSync } = require("fs");
 const utils = require("./utils");
 require("dotenv").config()
 
+const express = require("express");
+const app = express();
+
+app.get('/', (req,res) => {
+    res.send("Glory to Zeus, God of Olymp!");
+})
+
+app.listen(3000, () => {
+    console.log("Zeus has awoken")
+})
+
 const client = new Discord.Client({
     intents: [
         Discord.Intents.FLAGS.GUILDS,

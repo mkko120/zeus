@@ -24,7 +24,6 @@ const dbSetup = async () => {
     await db.set("warnings", {});
 }
 
-
 const sendEmbedMessage = async (author, message, channel, color, title, warned = null) => {
     const em = embedBuilder(author, message, channel, color, title)
 
@@ -74,6 +73,24 @@ const sendEmbedMessage = async (author, message, channel, color, title, warned =
 
 }
 
+
+const isModerator = async (message) => {
+    const member = await message.guild.members.fetch(message.author.id);
+    return member.permissions.has(Permissions.FLAGS.MODERATE_MEMBERS);
+}
+
+
+
+const utils = {
+    embedBuilder,
+    dbSetup,
+    sendEmbedMessage,
+    isModerator,
+}
+
+module.exports = utils;
+
+
 const fetchAndSend = (guild, channelID, em) => {
     guild.channels.fetch(channelID)
         .then(ch => {
@@ -83,12 +100,3 @@ const fetchAndSend = (guild, channelID, em) => {
         })
         .catch(console.log)
 }
-
-
-const utils = {
-    embedBuilder,
-    dbSetup,
-    sendEmbedMessage
-}
-
-module.exports = utils;

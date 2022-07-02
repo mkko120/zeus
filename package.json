@@ -13,7 +13,8 @@
   "dependencies": {
     "@replit/database": "^2.0.2",
     "discord.js": "^13.8.1",
-    "dotenv": "^16.0.1"
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1"
   },
   "devDependencies": {
     "chai": "^4.3.6",
